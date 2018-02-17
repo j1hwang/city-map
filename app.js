@@ -1,5 +1,35 @@
-var map;
+const body = $('body');
+const hamburger = $('#hamburger');
+const nav = $('#nav');
+const title = $('#title');
 
+hamburger.click(function(e) {
+	nav.toggle();
+	title.toggle();
+	if(body.width() > 750){
+		(hamburger.position().left > body.width()*0.1)
+			? hamburger.css('left', '2%')
+			: hamburger.css('left', '60%');
+	} else {
+		(hamburger.position().left > body.width()*0.1)
+			? hamburger.css('left', '2%')
+			: hamburger.css('left', '80%');
+	}
+	e.stopPropagation;
+});
+
+body.click(function(e) {
+	if(!($(e.target).is('#hamburger') || $(e.target).is('#nav'))){
+		if(body.width() < 1025) {
+			nav.hide();
+			title.show();
+			hamburger.css('left', '2%');
+		}
+	}
+});
+
+
+var map;
 // Function to initialize the map within the map div
 function initMap() {
 
@@ -121,8 +151,8 @@ function initMap() {
 		center: {lat: 37.566535, lng: 126.97796919999996},
 		zoom: 14,
 		mapTypeControlOptions: {
-			mapTypeIds: ['roadmap', 'satellite', 
-				'hybrid', 'terrain', 'styled_map']
+			mapTypeIds: ['']
+			//'roadmap', 'satellite', 'hybrid', 'terrain', 'styled_map']
 		}
 	});
 

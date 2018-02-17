@@ -1,3 +1,6 @@
+* {
+	box-sizing: border-box;
+}
 body,
 html {
 	margin: 0;
@@ -10,23 +13,57 @@ body {
 	font-family: Arial;
 	font-size: 12px;
 	color: #424242;
+	display: flex;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5 {
-	margin: 0; 
+#nav {
+	flex-grow: 8; 
+	background-color: #111;
+	display: none;
+	z-index: 8;
 }
 
-header,
-nav,
-footer,
-section,
-article,
-div {
-	box-sizing: border-box;
+#container {
+	flex-grow: 2;
+	max-height: 100%;
+}
+
+#header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 45px;
+	background-color: #333;
+	z-index: 7;
+}
+
+#hamburger {
+	position: fixed;
+	font-size: 20px;
+	left: 2%;
+	padding: 10px;
+	color: #5050ff;
+	z-index: 9;
+}
+
+#hamburger:hover {
+	cursor: pointer;
+}
+
+#title {
+	position: fixed;
+	top: 2%;
+	left: 40%;
+	text-align: right;
+	color: white;
+	font-size: 1.2rem;
+	z-index: 10;
+}
+
+#map {
+	position: relative;
+	height: 100%;
 }
 
 ul {
@@ -35,8 +72,54 @@ ul {
 	margin: 0;
 }
 
-#map { height: 100%; }
+@media screen and (min-width: 750px) {
+#nav {
+	flex-grow: 6;
+}
 
-@media screen and (max-width: 550px) {
+#container {
+	flex-grow: 4;
+}
 
+#header {
+	height: 60px;
+}
+
+#hamburger {
+	font-size: 30px;
+	
+}
+#title {
+	position: fixed;
+	left: 42%;
+	font-size: 1.8rem;
+}
+}
+
+@media screen and (min-width: 1025px) {
+#nav {
+	display: block;
+	flex-grow: 2;
+}
+
+#container {
+	flex-grow: 8;
+}
+
+#header {
+	height: 50px;
+	z-index: 9;
+}
+
+#hamburger {
+	display: none;
+	
+}
+
+#title {
+	position: fixed;
+	top: 1%;
+	left: 45%;
+	font-size: 1.8rem;
+}
 }

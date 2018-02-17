@@ -4,15 +4,19 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<title>Seoul City</title>
+		<script src="jquery-3.3.1.min.js"></script>
 		<link href="style.css" rel="stylesheet">
 	</head>
 	<body>
-		<aside>
-
-		</aside>
-		<div id="map"></div>
-
-		
+		<div id="nav"></div>
+		<span id="hamburger">&#9776;</span>
+		<div id="container">
+			<div id="header">
+				
+				<span id="title">Seoul City</span>
+			</div>
+			<div id="map"></div>
+		</div>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
 		<script src="app.js"></script>
 		<script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAwf8D5vkmnUPelEiGT7d1Y4g3K3b12Bcg&callback=initMap"></script>
