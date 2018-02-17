@@ -20,7 +20,11 @@ hamburger.click(function(e) {
 });
 
 body.click(function(e) {
-	if(!($(e.target).is('#hamburger') || $(e.target).is('#nav') || $(e.target).is('li'))){
+	if(!($(e.target).is('#hamburger') 
+		|| $(e.target).is('#nav') 
+		|| $(e.target).is('li')
+		|| $(e.target).is('input')
+	)){
 		if(body.width() < 1008) {
 			nav.hide();
 			title.show();
@@ -30,33 +34,56 @@ body.click(function(e) {
 });
 // Responsive parts (end)
 
+$('input').on('input', function() {
+	chosen = [];
+	$('li').removeClass('selected');
+	for(let i = 0; i < locations.length; i++) {
+		if(!locations[i].title.toLowerCase().includes($('input').val())) {
+
+			locations[i].selected = null;
+			continue;
+		}
+		locations[i].selected = true;
+		chosen.push(i); // ternary ////////////////////////////////////////////
+	}
+	//for(let i = 0; i < locations.length; i++) console.log(locations[i].selected);
+
+	initMap(chosen);
+});
+
+
+
 let map;
 let markers = [];
+let chosen = [];
 let locations = [
-	{title: 'Disneyland', location: {lat: 35.6329007, lng: 139.8782003}}, // attraction
-	{title: 'Tokyo Tower', location: {lat: 35.6585848, lng: 139.7432389}},
-	{title: 'Odaiba Statue of Liberty', location: {lat: 35.6298089, lng: 139.7618991}},
-	{title: 'City Hall Tower', location: {lat: 35.6892506, lng: 139.6896613}},
+	{title: 'Disneyland', location: {lat: 35.6329007, lng: 139.8782003}, selected: true}, // attractions
+	{title: 'Tokyo Tower', location: {lat: 35.6585848, lng: 139.7432389}, selected: true},
+	{title: 'Odaiba Statue of Liberty', location: {lat: 35.6298089, lng: 139.7618991}, selected: true},
+	{title: 'City Hall Tower', location: {lat: 35.6892506, lng: 139.6896613}, selected: true},
 
-	{title: 'Gonpachi', location: {lat: 35.6572753, lng: 139.7045559}}, // restaurant
-	{title: 'Tsujihan', location: {lat: 35.6651728, lng: 139.7434675}},
-	{title: 'Isen Honten', location: {lat: 35.6615181, lng: 139.6863567}},
+	{title: 'Gonpachi', location: {lat: 35.6572753, lng: 139.7045559}, selected: true}, // restaurants
+	{title: 'Tsujihan', location: {lat: 35.6651728, lng: 139.7434675}, selected: true},
+	{title: 'Isen Honten', location: {lat: 35.6615181, lng: 139.6863567}, selected: true},
 
-	{title: 'Sinjuku Gyoen', location: {lat: 35.6851806, lng: 139.7078577}}, // park
-	{title: 'Yoyogi Park', location: {lat: 35.6717403, lng: 139.6927507}},
-	{title: 'Ueno Park', location: {lat: 35.666489, lng: 139.7349774}},
+	{title: 'Sinjuku Gyoen', location: {lat: 35.6851806, lng: 139.7078577}, selected: true}, // parks
+	{title: 'Yoyogi Park', location: {lat: 35.6717403, lng: 139.6927507}, selected: true},
+	{title: 'Ueno Park', location: {lat: 35.666489, lng: 139.7349774}, selected: true},
 
-	{title: 'Senso-ji', location: {lat: 35.7147689, lng: 139.7947563}}, // temple
-	{title: 'Meiji Shrine', location: {lat: 35.6764019, lng: 139.6971319}}, 
+	{title: 'Senso-ji', location: {lat: 35.7147689, lng: 139.7947563}, selected: true}, // temples
+	{title: 'Meiji Shrine', location: {lat: 35.6764019, lng: 139.6971319}, selected: true},
 
-	{title: 'Tsukiji Market', location: {lat: 35.6654904, lng: 139.7684728}}, // shopping
-	{title: 'Harajuku Street', location: {lat: 35.6711042, lng: 139.7024456}},
-	{title: 'Roppongi Hills', location: {lat: 35.6604681, lng: 139.7270547}},
+	{title: 'Tsukiji Market', location: {lat: 35.664944, lng: 139.770136}, selected: true}, // shoppings
+	{title: 'Harajuku Street', location: {lat: 35.6711042, lng: 139.7024456}, selected: true},
+	{title: 'Roppongi Hills', location: {lat: 35.6604681, lng: 139.7270547}, selected: true},
 ];
+let full = [];
+for(let i = 0; i < locations.length; i++)
+	full.push(i);
 
 
 // Function to initialize the map within the map div
-function initMap() {
+var initMap = function(arr=full) {
 
 	const styledMapType = new google.maps.StyledMapType(
 		[
@@ -174,7 +201,7 @@ function initMap() {
 
 	map = new google.maps.Map(document.getElementById('map'), {
 		center: {lat: 35.6894875, lng: 139.69170639999993},
-		zoom: 14,
+		zoom: 12,
 		mapTypeControl: false
 	});
 
@@ -191,7 +218,7 @@ function initMap() {
     	let marker = new google.maps.Marker({
     		position: position,
     		title: title,
-    		//animation: google.maps.Animation.DROP,
+    		animation: google.maps.Animation.DROP,
     		id: i
     	});
 
@@ -202,6 +229,7 @@ function initMap() {
     }
     
     for (let i = 0; i < markers.length; i++) {
+    	if(!arr.includes(i)) continue;
         markers[i].setMap(map);
         bounds.extend(markers[i].position);
     }
@@ -241,16 +269,24 @@ let ViewModel = function() {
 
 	self.setLocation = function(clickedLocation) {
 
+		if($('input').val() !== '') {
+			chosen = [];
+			$('input').val('');
+		} 
+
 		self.currentLocation = clickedLocation;
-		for (var i = 0; i < markers.length; i++) {
-        	markers[i].setMap(null);
+		for (let i = 0; i < locations.length; i++) {
+        	if(locations[i].title === self.currentLocation.title()){
+
+        		let idx = chosen.indexOf(i);
+
+        		(idx === -1) ? chosen.push(i) : chosen.splice(idx, 1);
+        		$(`li:nth-child(${i+1})`).toggleClass('selected');
+        		
+        		break;
+        	}
         }
-        setTimeout(function() {
-        	initMap();
-        },500);
-        console.log(self.currentLocation);
-		console.log(self.currentLocation.title());
-		console.log(self.currentLocation.location());
+        (chosen.length === 0)? initMap() : initMap(chosen);
 	}
 }
 
@@ -258,6 +294,11 @@ let ViewModel = function() {
 let Location = function(data) {
 	this.title = ko.observable(data.title);
 	this.location = ko.observable(data.location);
+	this.selected = ko.observable(data.selected);
 }
 
-ko.applyBindings(new ViewModel());
+let VM = new ViewModel();
+
+//VM.
+
+ko.applyBindings(VM);

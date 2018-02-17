@@ -9,16 +9,18 @@
 	</head>
 	<body>
 		<div id="nav">
-			<input type="text">
+			<input type="text" placeholder=" Search" autofocus>
 			<button>Filter</button>
 			<ul data-bind="foreach: locationList">
+				<!-- ko {if: 1 == 1} -->
 				<li data-bind="text: title, click: $parent.setLocation"></li>
+				<!-- /ko -->
 			</ul>
 		</div>
 		<span id="hamburger">&#9776;</span>
 		<div id="container">
 			<div id="header">				
-				<span id="title">Tokyo Map</span>
+				<span id="title"><a href="./index.html">Tokyo Map</a></span>
 			</div>
 			<div id="map"></div>
 		</div>

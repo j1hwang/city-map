@@ -16,6 +16,11 @@ body {
 	display: flex;
 }
 
+a {
+	text-decoration: none;
+	color: white;
+}
+
 #nav {
 	flex-grow: 1; 
 	background-color: black;
@@ -84,6 +89,11 @@ li {
 
 li:hover {
 	cursor: pointer;
+	background-color: #5050ff;
+	color: white;
+}
+
+.selected {
 	background-color: #5050ff;
 	color: white;
 }
