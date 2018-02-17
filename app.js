@@ -1,39 +1,3 @@
-// Responsive parts
-const body = $('body');
-const hamburger = $('#hamburger');
-const nav = $('#nav');
-const title = $('#title');
-
-hamburger.click(function(e) {
-	nav.toggle();
-	title.toggle();
-	if(body.width() > 750){
-		(hamburger.position().left > body.width()*0.1)
-			? hamburger.css('left', '2%')
-			: hamburger.css('left', '60%');
-	} else {
-		(hamburger.position().left > body.width()*0.1)
-			? hamburger.css('left', '2%')
-			: hamburger.css('left', '70%');
-	}
-	e.stopPropagation;
-});
-
-body.click(function(e) {
-	if(!($(e.target).is('#hamburger') 
-		|| $(e.target).is('#nav') 
-		|| $(e.target).is('li')
-		|| $(e.target).is('input')
-	)){
-		if(body.width() < 1008) {
-			nav.hide();
-			title.show();
-			hamburger.css('left', '2%');
-		}
-	}
-});
-// Responsive parts (end)
-
 $('input').on('input', function() {
 	chosen = [];
 	$('li').removeClass('selected');
@@ -52,8 +16,6 @@ $('input').on('input', function() {
 });
 
 
-
-let map;
 let markers = [];
 let chosen = [];
 let locations = [
@@ -82,6 +44,7 @@ for(let i = 0; i < locations.length; i++)
 	full.push(i);
 
 
+let map;
 // Function to initialize the map within the map div
 var initMap = function(arr=full) {
 
@@ -208,7 +171,6 @@ var initMap = function(arr=full) {
 	map.mapTypes.set('styled_map', styledMapType);
 	map.setMapTypeId('styled_map');
 
-	
     let largeInfoWindow = new google.maps.InfoWindow();
     let bounds = new google.maps.LatLngBounds();
 
@@ -297,8 +259,4 @@ let Location = function(data) {
 	this.selected = ko.observable(data.selected);
 }
 
-let VM = new ViewModel();
-
-//VM.
-
-ko.applyBindings(VM);
+ko.applyBindings(new ViewModel());
