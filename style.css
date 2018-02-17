@@ -17,14 +17,15 @@ body {
 }
 
 #nav {
-	flex-grow: 8; 
-	background-color: #111;
+	flex-grow: 1; 
+	background-color: black;
 	display: none;
 	z-index: 8;
+	overflow: auto;
 }
 
 #container {
-	flex-grow: 2;
+	flex-grow: 99;
 	max-height: 100%;
 }
 
@@ -66,19 +67,34 @@ body {
 	height: 100%;
 }
 
+input {
+	margin: 60px 0 0 5px;
+}
+
 ul {
 	list-style: none;
 	padding: 0;
-	margin: 0;
+	/*padding-left: 50px;*/
+}
+
+li {
+	padding: 10px 5px 10px 20px;
+	color: #bbb;
+}
+
+li:hover {
+	cursor: pointer;
+	background-color: #5050ff;
+	color: white;
 }
 
 @media screen and (min-width: 750px) {
 #nav {
-	flex-grow: 6;
+	flex-grow: 1;
 }
 
 #container {
-	flex-grow: 4;
+	flex-grow: 99;
 }
 
 #header {
@@ -99,11 +115,11 @@ ul {
 @media screen and (min-width: 1025px) {
 #nav {
 	display: block;
-	flex-grow: 2;
+	flex-grow: 1;
 }
 
 #container {
-	flex-grow: 8;
+	flex-grow: 99;
 }
 
 #header {
@@ -118,8 +134,8 @@ ul {
 
 #title {
 	position: fixed;
-	top: 1%;
-	left: 45%;
-	font-size: 1.8rem;
+	top: 10px;
+	left: 47%;
+	font-size: 1.5rem;
 }
 }

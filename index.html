@@ -3,17 +3,22 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>Seoul City</title>
+		<title>Tokyo, Japan</title>
 		<script src="jquery-3.3.1.min.js"></script>
 		<link href="style.css" rel="stylesheet">
 	</head>
 	<body>
-		<div id="nav"></div>
+		<div id="nav">
+			<input type="text">
+			<button>Filter</button>
+			<ul data-bind="foreach: locationList">
+				<li data-bind="text: title, click: $parent.setLocation"></li>
+			</ul>
+		</div>
 		<span id="hamburger">&#9776;</span>
 		<div id="container">
-			<div id="header">
-				
-				<span id="title">Seoul City</span>
+			<div id="header">				
+				<span id="title">Tokyo Map</span>
 			</div>
 			<div id="map"></div>
 		</div>
