@@ -198,7 +198,13 @@ initMap = function(arr=full, selected=null) {
 		// When specific marker is clicked,
 		// Color of marker changes, List view changes
 		// and marker will bounce!
-		marker.addListener('click', function() {
+		marker.addListener('click', handler());
+		marker.addListener('mouseover', mOver());
+		marker.addListener('mouseout', mOut());
+	}
+
+	function handler() {
+		return function() {
 			for (let i = 0; i < markers.length; i++) {
 				markers[i].setIcon(defaultIcon);
 				markers[i].setAnimation();
@@ -215,14 +221,22 @@ initMap = function(arr=full, selected=null) {
 
 			// Pop info-window
 			populateInfoWindow(this, largeInfoWindow);
-		});
-		marker.addListener('mouseover', function() {
-			this.setIcon(highlightedIcon);
-		});
-		marker.addListener('mouseout', function() {
-			this.setIcon(defaultIcon);
-		});
+		};
 	}
+
+	function mOver() {
+		return function() {
+			this.setIcon(highlightedIcon);
+		};
+	}
+
+	function mOut() {
+		return function() {
+			this.setIcon(defaultIcon);
+		};
+	}
+
+
 
 	for (let i = 0; i < markers.length; i++) {
 
