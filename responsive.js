@@ -1,5 +1,4 @@
 // Responsive parts
-
 const body = $('body');
 const hamburger = $('#hamburger');
 const nav = $('#nav');
@@ -7,6 +6,7 @@ const title = $('#title');
 const buttons = $('#buttons');
 const button = $('#button');
 
+// Menu icon handling
 hamburger.click(function(e) {
 	nav.toggle();
 	title.toggle();
@@ -30,6 +30,7 @@ $('#header').click(function(e) {
 	}
 });
 
+// Filter icon handling
 button.click(function() {
 	buttons.toggle();
 });

@@ -1,3 +1,5 @@
+// Locations and Categories can be brought from DB instead
+// Locations info
 var locations = [
 	{title: 'Disneyland', location: {lat: 35.6329007, lng: 139.8782003}, ctg: 'attractions'},
 	{title: 'Tokyo Tower', location: {lat: 35.6585848, lng: 139.7432389}, ctg: 'attractions'},
@@ -20,6 +22,7 @@ var locations = [
 	{title: 'Roppongi Hills', location: {lat: 35.6604681, lng: 139.7270547}, ctg: 'shoppings'},
 ];
 
+// Categories info
 var categories = [
 	{title: 'show all'},
 	{title: 'attractions'},
@@ -29,7 +32,11 @@ var categories = [
 	{title: 'shoppings'},
 ];
 
+// Will be filled with titles
 let chosen = [];
+
+// When item non selected at all, App shows all items
+// This is default parameter for initMap func.
 let full = [];
 for(let i = 0; i < locations.length; i++) full.push(locations[i].title);
 
@@ -42,7 +49,7 @@ initMap = function(arr=full, selected=null) {
 
 	markers = [];
 
-	// stylize google map
+	// Stylize google map
 	const styledMapType = new google.maps.StyledMapType(
 		[
 			{elementType: 'geometry', stylers: [{color: '#ebe3cd'}]},
@@ -166,32 +173,38 @@ initMap = function(arr=full, selected=null) {
 	map.mapTypes.set('styled_map', styledMapType);
 	map.setMapTypeId('styled_map');
 
-    let largeInfoWindow = new google.maps.InfoWindow();
-    
-    const defaultIcon = makeMarkerIcon('aabbaa');
-    const highlightedIcon = makeMarkerIcon('5050ff');
-    
-    let bounds = new google.maps.LatLngBounds();
+	// Instantiate information window
+	let largeInfoWindow = new google.maps.InfoWindow();
+	
+	// For changing color of markers
+	const defaultIcon = makeMarkerIcon('aabbaa');
+	const highlightedIcon = makeMarkerIcon('5050ff');
+	
+	let bounds = new google.maps.LatLngBounds();
 
-    for(let i = 0; i < locations.length; i++) {
-    	let position = locations[i].location;
-    	let title = locations[i].title;
-    	let marker = new google.maps.Marker({
-    		position: position,
-    		title: title,
-    		//animation: google.maps.Animation.DROP,
-    		icon: defaultIcon,
-    		id: i
-    	});
+	// Initiate marker components
+	for(let i = 0; i < locations.length; i++) {
+		let position = locations[i].location;
+		let title = locations[i].title;
+		let marker = new google.maps.Marker({
+			position: position,
+			title: title,
+			icon: defaultIcon,
+			id: i
+		});
 
-    	markers.push(marker);
-    	marker.addListener('click', function() {
-	    	for (let i = 0; i < markers.length; i++) {
-	    		markers[i].setIcon(defaultIcon);
-	    		markers[i].setAnimation();
-	    	}	
-    		this.setIcon(highlightedIcon);
-    		this.setAnimation(google.maps.Animation.BOUNCE);
+		markers.push(marker);
+
+		// When specific marker is clicked,
+		// Color of marker changes, List view changes
+		// and marker will bounce!
+		marker.addListener('click', function() {
+			for (let i = 0; i < markers.length; i++) {
+				markers[i].setIcon(defaultIcon);
+				markers[i].setAnimation();
+			}	
+			this.setIcon(highlightedIcon);
+			this.setAnimation(google.maps.Animation.BOUNCE);
 
 			$('li').removeClass('selected');
 			for (let i = 0; i < viewModel.locationList().length; i++) {
@@ -200,80 +213,87 @@ initMap = function(arr=full, selected=null) {
 				}
 			}
 
-    		populateInfoWindow(this, largeInfoWindow);
-    	});
-    	marker.addListener('mouseover', function() {
+			// Pop info-window
+			populateInfoWindow(this, largeInfoWindow);
+		});
+		marker.addListener('mouseover', function() {
 			this.setIcon(highlightedIcon);
 		});
 		marker.addListener('mouseout', function() {
 			this.setIcon(defaultIcon);
 		});
-    }
-    
-    for (let i = 0; i < markers.length; i++) {
-    	
-    	if(!arr.includes(markers[i].title)) 
-    		continue;
+	}
 
-    	if(markers[i].title === selected) {
-    		markers[i].setIcon(highlightedIcon);
-    		markers[i].setAnimation(google.maps.Animation.BOUNCE);
+	for (let i = 0; i < markers.length; i++) {
 
-    		populateInfoWindow(markers[i], largeInfoWindow);
-    	}
+		// Only show markers having same title from list view
+		if(!arr.includes(markers[i].title)) 
+			continue;
 
-        markers[i].setMap(map);
-        bounds.extend(markers[i].position);
-    }
-    map.fitBounds(bounds);
+		if(markers[i].title === selected) {
+			markers[i].setIcon(highlightedIcon);
+			markers[i].setAnimation(google.maps.Animation.BOUNCE);
 
-    function populateInfoWindow(marker, infowindow) {
-    	if(infowindow.marker != marker) {
-    		infowindow.marker = marker;
+			populateInfoWindow(markers[i], largeInfoWindow);
+		}
 
-    		// Make sure the marker property is cleared if the infowindow is closed.
-          	infowindow.addListener('closeclick', function() {
-            	infowindow.marker = null;
-        	});
+		// Adjust map boundary
+		markers[i].setMap(map);
+		bounds.extend(markers[i].position);
+	}
+	map.fitBounds(bounds);
 
-    		infowindow.setContent('<div>' + marker.title + '</div><div id="wikipedia-links"></div>');
 
-    		let wiki = $('#wikipedia-links');
+	function populateInfoWindow(marker, infowindow) {
+		if(infowindow.marker != marker) {
+			infowindow.marker = marker;
 
-    		let wiki_url = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' 
-    		+ marker.title +'&format=json&callback=wikiCallback';
+			// Make sure the marker property is cleared if the infowindow is closed.
+			infowindow.addListener('closeclick', function() {
+				infowindow.marker = null;
+			});
 
-    		let wikiRequestTimeout = setTimeout(function() {
-		         wiki.text("failed to get Wikipedia resources");
-		    }, 5000);
+			infowindow.setContent('<div>' + marker.title + '</div><div id="wikipedia-links"></div>');
 
-		    $.ajax(wiki_url, {
-		        dataType: "jsonp",
-		        //jsonp: "callback"
+			// Ready for wikipedia API call
+			let wiki = $('#wikipedia-links');
+			let wiki_url = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='
+			+ marker.title +'&format=json&callback=wikiCallback';
 
-		        success: function(response){
-		        	
-		            let articles = response[1];
-		            if(articles.length < 1) {
-		            	wiki.text("No Wikipedia resources found");
-		            }
+			// Error Handling
+			let wikiRequestTimeout = setTimeout(function() {
+				 wiki.text("failed to get Wikipedia resources");
+			}, 5000);
 
-		            for(let i = 0; i < articles.length; i++) {
+			// Async API call
+			$.ajax(wiki_url, {
+				dataType: "jsonp",
+				//jsonp: "callback"
 
-		                let title = articles[i];
-		                let url = 'http://en.wikipedia.org/wiki/' + title;
-		                wiki.append(`<li><a href='${url}'>${title}</a></li>`);
-		                if(i >= 2) {
-		                	break;		                	
-		                } 
-		            }
-		            clearTimeout(wikiRequestTimeout);
-		        },
-		    });
-          	infowindow.open(map, marker);
-    	}
-    }
+				success: function(response){
+					
+					let articles = response[1];
+					if(articles.length < 1) {
+						wiki.text("No Wikipedia resources found");
+					}
 
+					for(let i = 0; i < articles.length; i++) {
+
+						let title = articles[i];
+						let url = 'http://en.wikipedia.org/wiki/' + title;
+						wiki.append(`<li><a href='${url}'>${title}</a></li>`);
+						if(i >= 2) {
+							break;							
+						} 
+					}
+					clearTimeout(wikiRequestTimeout);
+				},
+			});
+		  	infowindow.open(map, marker);
+		}
+	}
+
+	// Function for manipulating marker color
 	function makeMarkerIcon(markerColor) {
 		var markerImage = new google.maps.MarkerImage(
 			'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'
@@ -288,6 +308,7 @@ initMap = function(arr=full, selected=null) {
 }
 
 
+// Knockout.js
 var viewModel = {
 
 	self: this,
@@ -297,6 +318,8 @@ var viewModel = {
 	currentLocation: ko.observable(''),
 	query: ko.observable(''),
 
+	// When list view itmes are clicked,
+	// re-render the google map
 	setLocation: function(clickedLocation) {
 
 		let selected = '';
@@ -307,18 +330,19 @@ var viewModel = {
 			let title = viewModel.locationList()[i].title;
 			
 			let idx = chosen.indexOf(title);
-        	if(idx === -1) {
-        		chosen.push(title);
-        	}
+			if(idx === -1) {
+				chosen.push(title);
+			}
 			
-        	if(title === self.currentLocation.title) {
-        		$(`li:nth-child(${i+1})`).toggleClass('selected');
-        		selected = title;
-        	}
-        }
-        (chosen.length === 0)? initMap() : initMap(chosen, selected);
+			if(title === self.currentLocation.title) {
+				$(`li:nth-child(${i+1})`).toggleClass('selected');
+				selected = title;
+			}
+		}
+		(chosen.length === 0)? initMap() : initMap(chosen, selected);
 	},
 
+	// Reflect search input immediately and asynchronously
 	search: function(value) {
 
 		chosen = [];
@@ -334,6 +358,7 @@ var viewModel = {
 		(chosen.length === 0)? initMap() : initMap(chosen);
 	},
 
+	// Filtering view with clickable buttons
 	setCategory: function(clicked) {
 		
 		chosen = [];
@@ -349,5 +374,7 @@ var viewModel = {
 	},
 }
 
+// Subscribe search input for immediate reflection to list view
 viewModel.query.subscribe(viewModel.search);
+
 ko.applyBindings(viewModel);
