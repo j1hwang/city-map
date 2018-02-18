@@ -13,7 +13,10 @@
 				<form action="#" data-bind="submit: search">
 					<input type="text" placeholder="Search" data-bind="value: query, valueUpdate: 'keyup'" autofocus>
 				</form>
-				<button>Filter</button>	
+				<button id="button">Filter</button>	
+			</div>
+			<div id="buttons" data-bind="foreach: categoryList">
+				<button data-bind="text: title, click: $parent.setCategory"></button>
 			</div>
 			<ul data-bind="foreach: locationList">
 				<li data-bind="text: title, click: $parent.setLocation"></li>
