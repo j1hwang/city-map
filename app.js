@@ -35,7 +35,9 @@ for(let i = 0; i < locations.length; i++) full.push(locations[i].title);
 let map;
 let markers = [];
 // Function to initialize the map within the map div
-function initMap(arr=full) {
+initMap = function(arr=full, selected=null) {
+
+	markers = [];
 
 	const styledMapType = new google.maps.StyledMapType(
 		[
@@ -161,6 +163,10 @@ function initMap(arr=full) {
 	map.setMapTypeId('styled_map');
 
     let largeInfoWindow = new google.maps.InfoWindow();
+    
+    const defaultIcon = makeMarkerIcon('aabbaa');
+    const highlightedIcon = makeMarkerIcon('5050ff');
+    
     let bounds = new google.maps.LatLngBounds();
 
     for(let i = 0; i < locations.length; i++) {
@@ -170,17 +176,39 @@ function initMap(arr=full) {
     		position: position,
     		title: title,
     		//animation: google.maps.Animation.DROP,
+    		icon: defaultIcon,
     		id: i
     	});
 
     	markers.push(marker);
     	marker.addListener('click', function() {
+	    	for (let i = 0; i < markers.length; i++) {
+	    		markers[i].setIcon(defaultIcon);
+	    		markers[i].setAnimation();
+	    	}	
+    		this.setIcon(highlightedIcon);
+    		this.setAnimation(google.maps.Animation.BOUNCE);
     		populateInfoWindow(this, largeInfoWindow);
     	});
+    	marker.addListener('mouseover', function() {
+			this.setIcon(highlightedIcon);
+		});
+		marker.addListener('mouseout', function() {
+			this.setIcon(defaultIcon);
+		});
     }
     
     for (let i = 0; i < markers.length; i++) {
-    	if(!arr.includes(markers[i].title)) continue;
+    	
+    	if(!arr.includes(markers[i].title)) 
+    		continue;
+
+    	if(markers[i].title === selected) {
+    		markers[i].setIcon(highlightedIcon);
+    		markers[i].setAnimation(google.maps.Animation.BOUNCE);
+    		populateInfoWindow(markers[i], largeInfoWindow);
+    	}
+
         markers[i].setMap(map);
         bounds.extend(markers[i].position);
     }
@@ -198,6 +226,17 @@ function initMap(arr=full) {
         	});
     	}
     }
+	function makeMarkerIcon(markerColor) {
+		var markerImage = new google.maps.MarkerImage(
+			'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'
+			+ markerColor + '|40|_|%E2%80%A2',
+			new google.maps.Size(21, 34),
+			new google.maps.Point(0, 0),
+			new google.maps.Point(10, 34),
+			new google.maps.Size(21,34)
+		);
+		return markerImage;
+	}
 }
 
 
@@ -211,19 +250,38 @@ var viewModel = {
 
 	setLocation: function(clickedLocation) {
 
+		let selected = '';
 		currentLocation = clickedLocation;
+		$('li').removeClass('selected');
+
 		for (let i = 0; i < viewModel.locationList().length; i++) {
 			let title = viewModel.locationList()[i].title;
-        	if(title === self.currentLocation.title){
-
-        		let idx = chosen.indexOf(title);
-        		(idx === -1) ? chosen.push(title) : chosen.splice(idx, 1);
-
+			
+			let idx = chosen.indexOf(title);
+        	if(idx === -1) {
+        		chosen.push(title);
+        	}
+			
+        	if(title === self.currentLocation.title) {
         		$(`li:nth-child(${i+1})`).toggleClass('selected');
-        		break;
+        		selected = title;
         	}
         }
-        (chosen.length === 0)? initMap() : initMap(chosen);
+        console.log(selected);
+        (chosen.length === 0)? initMap() : initMap(chosen, selected);
+
+
+
+     //    for (let i = 0; i < markers.length; i++) {
+     //    	markers[i].setIcon(initMap().defaultIcon);
+    	// 	markers[i].setAnimation();
+
+    	// 	if(markers[i].title === currentLocation.title) {
+    	// 		this.setIcon(highlightedIcon);
+    	// 		this.setAnimation(google.maps.Animation.BOUNCE);
+    	// 	}
+    		
+    	// }	
 	},
 
 	search: function(value) {
