@@ -13,16 +13,16 @@ hamburger.click(function(e) {
 	if(body.width() > 750){
 		(hamburger.position().left > body.width()*0.1)
 			? hamburger.css('left', '2%')
-			: hamburger.css('left', '22%');
+			: hamburger.css('left', '2%');
 	} else {
 		(hamburger.position().left > body.width()*0.1)
 			? hamburger.css('left', '2%')
-			: hamburger.css('left', '48%');
+			: hamburger.css('left', '2%');
 	}
 	e.stopPropagation;
 });
 
-$('#container').click(function(e) {
+$('#header').click(function(e) {
 	if(body.width() < 1008) {
 		nav.hide();
 		title.show();

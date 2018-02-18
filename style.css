@@ -34,10 +34,6 @@ a {
 	margin-top: 60px;
 }
 
-#filter button {
-	/*height: 20px;*/
-}
-
 input {
 	margin: 0 5px 0 5px;
 }
@@ -47,12 +43,14 @@ input {
 	max-width: 200px;
 	display: flex;
 	flex-wrap: wrap;
+	display: none;
 }
 
 #buttons button {
-	padding: 10px;
+	padding: 5px;
 	margin: 5px;
 	border-radius: 10px;
+	background-color: #aaa;
 }
 
 #buttons button:hover {
@@ -97,6 +95,27 @@ input {
 	color: white;
 	font-size: 1.2rem;
 	z-index: 10;
+}
+
+#wikipedia-links {
+	margin-top: 10px;
+}
+
+#wikipedia-links li {
+	margin-top: 1px;
+	padding-right: 25px;
+	list-style: none;
+	background-color: #eee;
+}
+
+#wikipedia-links li:hover {
+	background-color: #5050ff;
+}
+
+#wikipedia-links li a{
+	color: black;
+	font-weight: bold;
+	font-size: 12px;
 }
 
 #map {
