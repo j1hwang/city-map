@@ -30,7 +30,7 @@ var categories = [
 
 let chosen = [];
 let full = [];
-for(let i = 0; i < locations.length; i++) full.push(i);
+for(let i = 0; i < locations.length; i++) full.push(locations[i].title);
 
 let map;
 let markers = [];
@@ -169,7 +169,7 @@ function initMap(arr=full) {
     	let marker = new google.maps.Marker({
     		position: position,
     		title: title,
-    		animation: google.maps.Animation.DROP,
+    		//animation: google.maps.Animation.DROP,
     		id: i
     	});
 
@@ -180,7 +180,7 @@ function initMap(arr=full) {
     }
     
     for (let i = 0; i < markers.length; i++) {
-    	if(!arr.includes(i)) continue;
+    	if(!arr.includes(markers[i].title)) continue;
         markers[i].setMap(map);
         bounds.extend(markers[i].position);
     }
@@ -213,10 +213,11 @@ var viewModel = {
 
 		currentLocation = clickedLocation;
 		for (let i = 0; i < viewModel.locationList().length; i++) {
-        	if(viewModel.locationList()[i].title === self.currentLocation.title){
+			let title = viewModel.locationList()[i].title;
+        	if(title === self.currentLocation.title){
 
-        		let idx = chosen.indexOf(i);
-        		(idx === -1) ? chosen.push(i) : chosen.splice(idx, 1);
+        		let idx = chosen.indexOf(title);
+        		(idx === -1) ? chosen.push(title) : chosen.splice(idx, 1);
 
         		$(`li:nth-child(${i+1})`).toggleClass('selected');
         		break;
@@ -234,7 +235,7 @@ var viewModel = {
 			if(locations[i].title.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
 				viewModel.locationList.push(locations[i]);
 				if(value !== '')
-					chosen.push(i);
+					chosen.push(locations[i].title);
 			}
 		}
 		(chosen.length === 0)? initMap() : initMap(chosen);
@@ -248,12 +249,10 @@ var viewModel = {
 		for (let i = 0; i < locations.length; i++) {
 			if(locations[i].ctg === clicked.title) {
 				viewModel.locationList.push(locations[i]);
-				chosen.push(i);
+				chosen.push(locations[i].title);
 			}
 		}
 		(chosen.length === 0)? initMap() : initMap(chosen);
-		// console.log(clicked.title);
-
 	},
 }
 
