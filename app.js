@@ -257,8 +257,7 @@ initMap = function(arr=full, selected=null) {
 
 			// Ready for wikipedia API call
 			let wiki = $('#wikipedia-links');
-			let wiki_url = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='
-			+ marker.title +'&format=json&callback=wikiCallback';
+			let wiki_url = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.title +'&format=json&callback=wikiCallback';
 
 			// Error Handling
 			let wikiRequestTimeout = setTimeout(function() {
@@ -296,8 +295,7 @@ initMap = function(arr=full, selected=null) {
 	// Function for manipulating marker color
 	function makeMarkerIcon(markerColor) {
 		var markerImage = new google.maps.MarkerImage(
-			'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'
-			+ markerColor + '|40|_|%E2%80%A2',
+			'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor + '|40|_|%E2%80%A2',
 			new google.maps.Size(21, 34),
 			new google.maps.Point(0, 0),
 			new google.maps.Point(10, 34),
@@ -305,7 +303,7 @@ initMap = function(arr=full, selected=null) {
 		);
 		return markerImage;
 	}
-}
+};
 
 
 // Knockout.js
@@ -372,7 +370,7 @@ var viewModel = {
 		}
 		(chosen.length === 0)? initMap() : initMap(chosen);
 	},
-}
+};
 
 // Subscribe search input for immediate reflection to list view
 viewModel.query.subscribe(viewModel.search);
