@@ -143,13 +143,13 @@ ul {
 
 li {
 	padding: 10px 5px 10px 20px;
-	color: #bbb;
+	color: #777;
 }
 
 li:hover {
 	cursor: pointer;
 	color: white;
-	background-color: #5050ff;
+	/*background-color: #ff5050;*/
 }
 
 li:active {

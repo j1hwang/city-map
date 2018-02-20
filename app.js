@@ -237,8 +237,6 @@ initMap = function(arr=full, selected=null) {
 		};
 	}
 
-
-
 	for (let i = 0; i < markers.length; i++) {
 
 		// Only show markers having same title from list view
