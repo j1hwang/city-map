@@ -49,10 +49,27 @@ for(let i = 0; i < locations.length; i++) full.push(locations[i].title);
 
 let map;
 let markers = [];
+let newInfo;
 
 // Function to initialize the map within the map div
 initMap = function(arr=full, selected=null) {
 
+	// Instantiate information window
+	//let largeInfoWindow = new google.maps.InfoWindow();
+	if(selected === null)
+		newInfo = new google.maps.InfoWindow();
+	
+	// For changing color of markers
+	const defaultIcon = makeMarkerIcon('aabbaa');
+	const highlightedIcon = makeMarkerIcon('5050ff');
+	
+	let bounds = new google.maps.LatLngBounds();
+
+	if(selected !== null) {
+		setMarker();
+		return;
+	}
+	
 	markers = [];
 
 	// Stylize google map
@@ -179,15 +196,6 @@ initMap = function(arr=full, selected=null) {
 	map.mapTypes.set('styled_map', styledMapType);
 	map.setMapTypeId('styled_map');
 
-	// Instantiate information window
-	let largeInfoWindow = new google.maps.InfoWindow();
-	
-	// For changing color of markers
-	const defaultIcon = makeMarkerIcon('aabbaa');
-	const highlightedIcon = makeMarkerIcon('5050ff');
-	
-	let bounds = new google.maps.LatLngBounds();
-
 	// Initiate marker components
 	for(let i = 0; i < locations.length; i++) {
 		let position = locations[i].location;
@@ -221,7 +229,7 @@ initMap = function(arr=full, selected=null) {
 			viewModel.selectedTitle(this.title);
 
 			// Pop info-window
-			populateInfoWindow(this, largeInfoWindow);
+			populateInfoWindow(this, newInfo);
 		};
 	}
 
@@ -246,8 +254,8 @@ initMap = function(arr=full, selected=null) {
 		if(markers[i].title === selected) {
 			markers[i].setIcon(highlightedIcon);
 			markers[i].setAnimation(google.maps.Animation.BOUNCE);
-
-			populateInfoWindow(markers[i], largeInfoWindow);
+			console.log('nonono');
+			populateInfoWindow(markers[i], newInfo);
 		}
 
 		// Adjust map boundary
@@ -322,6 +330,21 @@ initMap = function(arr=full, selected=null) {
 			new google.maps.Size(21,34)
 		);
 		return markerImage;
+	}
+
+	function setMarker() {
+		let idx;
+		for (let i = 0; i < markers.length; i++) {
+			markers[i].setIcon(defaultIcon);
+			markers[i].setAnimation();
+
+			if(markers[i].title === selected) {
+				markers[i].setIcon(highlightedIcon);
+				markers[i].setAnimation(google.maps.Animation.BOUNCE);
+				idx = i;
+			}
+		}
+		populateInfoWindow(markers[idx], newInfo);
 	}
 };
 
