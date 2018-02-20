@@ -139,7 +139,6 @@ input {
 ul {
 	list-style: none;
 	padding: 0;
-	/*padding-left: 50px;*/
 }
 
 li {
@@ -150,6 +149,11 @@ li {
 li:hover {
 	cursor: pointer;
 	color: white;
+	background-color: #5050ff;
+}
+
+li:active {
+	background-color: #2020ff;
 }
 
 .selected {
@@ -211,6 +215,6 @@ li:hover {
 }
 
 li:hover {
-	background-color: #5050ff;
+	/*background-color: #5050ff;*/
 }
 }

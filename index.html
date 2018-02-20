@@ -19,7 +19,7 @@
 				<button data-bind="text: title, click: $parent.setCategory"></button>
 			</div>
 			<ul data-bind="foreach: locationList">
-				<li data-bind="text: title, click: $parent.setLocation"></li>
+				<li data-bind="text: title, click: $parent.setLocation, css: {selected: title == $parent.selectedTitle()}"></li>
 			</ul>
 			<img id="wiki" src="wiki.png" alt="Using Wikipedia API">
 		</div>
@@ -33,6 +33,6 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
 		<script src="responsive.js"></script>
 		<script src="app.js"></script>
-		<script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAwf8D5vkmnUPelEiGT7d1Y4g3K3b12Bcg&callback=initMap"></script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAwf8D5vkmnUPelEiGT7d1Y4g3K3b12Bcg&callback=initMap" onerror="myerrorhandler()"></script>
 	</body>
 </html>

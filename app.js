@@ -1,3 +1,9 @@
+function myerrorhandler() {
+	window.alert('Cannot load Google Map properly.\nPlease nofity to enav247@gmail.com');
+}
+
+'use strict';
+
 // Locations and Categories can be brought from DB instead
 // Locations info
 var locations = [
@@ -212,12 +218,7 @@ initMap = function(arr=full, selected=null) {
 			this.setIcon(highlightedIcon);
 			this.setAnimation(google.maps.Animation.BOUNCE);
 
-			$('li').removeClass('selected');
-			for (let i = 0; i < viewModel.locationList().length; i++) {
-				if(this.title === viewModel.locationList()[i].title){
-					$(`li:nth-child(${i+1})`).toggleClass('selected');
-				}
-			}
+			viewModel.selectedTitle(this.title);
 
 			// Pop info-window
 			populateInfoWindow(this, largeInfoWindow);
@@ -267,16 +268,20 @@ initMap = function(arr=full, selected=null) {
 				infowindow.marker = null;
 			});
 
+			let output = '';
+
 			infowindow.setContent('<div>' + marker.title + '</div><div id="wikipedia-links"></div>');
 
 			// Ready for wikipedia API call
-			let wiki = $('#wikipedia-links');
 			let wiki_url = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + marker.title +'&format=json&callback=wikiCallback';
 
 			// Error Handling
 			let wikiRequestTimeout = setTimeout(function() {
-				 wiki.text("failed to get Wikipedia resources");
+				output = "Failed to get Wikipedia resources";
+				infowindow.setContent('<div>' + marker.title + '</div><div id="wikipedia-links">' + output + '</div>');
 			}, 5000);
+
+			
 
 			// Async API call
 			$.ajax(wiki_url, {
@@ -287,19 +292,22 @@ initMap = function(arr=full, selected=null) {
 					
 					let articles = response[1];
 					if(articles.length < 1) {
-						wiki.text("No Wikipedia resources found");
+						output = "No Wikipedia resources found";
 					}
 
 					for(let i = 0; i < articles.length; i++) {
 
 						let title = articles[i];
 						let url = 'http://en.wikipedia.org/wiki/' + title;
-						wiki.append(`<li><a href='${url}'>${title}</a></li>`);
+
+						output += `<li><a href='${url}'>${title}</a></li>`;
+
 						if(i >= 2) {
 							break;							
 						} 
 					}
 					clearTimeout(wikiRequestTimeout);
+					infowindow.setContent('<div>' + marker.title + '</div><div id="wikipedia-links">' + output + '</div>');
 				},
 			});
 		  	infowindow.open(map, marker);
@@ -329,6 +337,7 @@ var viewModel = {
 	categoryList: ko.observableArray(categories),
 	currentLocation: ko.observable(''),
 	query: ko.observable(''),
+	selectedTitle: ko.observable(''),
 
 	// When list view itmes are clicked,
 	// re-render the google map
@@ -336,7 +345,6 @@ var viewModel = {
 
 		let selected = '';
 		currentLocation = clickedLocation;
-		$('li').removeClass('selected');
 
 		for (let i = 0; i < viewModel.locationList().length; i++) {
 			let title = viewModel.locationList()[i].title;
@@ -347,7 +355,7 @@ var viewModel = {
 			}
 			
 			if(title === self.currentLocation.title) {
-				$(`li:nth-child(${i+1})`).toggleClass('selected');
+				viewModel.selectedTitle(title);
 				selected = title;
 			}
 		}
