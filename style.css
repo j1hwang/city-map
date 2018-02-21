@@ -82,7 +82,7 @@ input {
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 4%;
+	height: 7%;
 	background-color: #333;
 	z-index: 7;
 }
@@ -132,9 +132,9 @@ input {
 }
 
 #map {
-	top: 4%;
+	top: 7%;
 	position: relative;
-	height: 96%;
+	height: 93%;
 }
 
 ul {
